@@ -79,5 +79,7 @@ export default class Game extends Phaser.Scene {
     platformImpact() {
         this.score++;
         this.scoreText.setText(`PUNTOS: ${this.score}`);
+        const relativeImpact = this.ball.x - this.platform.x;
+        this.ball.setVelocityX(10 * relativeImpact);
     }
 }
