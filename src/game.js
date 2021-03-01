@@ -3,6 +3,9 @@ import backgroundImage from './assets/background.png';
 import platformImage from './assets/platform.png';
 import ballImage from './assets/ball.png';
 
+import Ball from './components/ball';
+import Platform from './components/platform';
+
 export default class Game extends Phaser.Scene {
 
     constructor() {
@@ -11,9 +14,12 @@ export default class Game extends Phaser.Scene {
 
     init() {
         this.score = 0;
+        this.ball = new Ball(this);
+        this.platform = new Platform(this);
     }
 
     preload() {
+        // Load images
         this.load.image('logo', gameoverImage);
         this.load.image('background', backgroundImage);
         this.load.image('gameover', gameoverImage);
@@ -29,17 +35,9 @@ export default class Game extends Phaser.Scene {
         this.gameoverImage = this.add.image(400, 90, 'gameover');
         this.gameoverImage.visible = false;
 
-        // Platform
-        this.platform = this.physics.add.image(400, 460, 'platform');
-        this.platform.body.allowGravity = false;
-        this.platform.setImmovable();
-        this.platform.setCollideWorldBounds(true);
-
-        // Ball
-        this.ball = this.physics.add.image(385, 430, 'ball');
-        this.ball.setCollideWorldBounds(true);
-        this.ball.setBounce(1);
-        this.ball.setData('glue', true);
+        // Create components
+        this.platform.create();
+        this.ball.create();
 
         // Keyboard cursors
         this.cursors = this.input.keyboard.createCursorKeys();
@@ -53,45 +51,29 @@ export default class Game extends Phaser.Scene {
 
         // World
         this.physics.world.setBoundsCollision(true, true, true, false);
-        this.physics.add.collider(this.ball, this.platform, this.platformImpact, null, this);
+        this.physics.add.collider(this.ball.get(), this.platform.get(), this.platformImpact, null, this);
     }
 
     update() {
         // Check if game over
-        if (this.ball.y > 500) {
+        if (this.ball.isLost()) {
             this.gameoverImage.visible = true;
             this.scene.pause();
         }
 
         // Eject ball
-        if (this.cursors.up.isDown && this.ball.getData('glue')) {
-            this.ball.setVelocity(-75, -300);
-            this.ball.setData('glue', false);
+        if (this.cursors.up.isDown) {
+            this.ball.eject(-75);
         }
 
-        // Cursor listener
-        if (this.cursors.left.isDown) {
-            this.platform.setVelocityX(-500);
-            if (this.ball.getData('glue')) {
-                this.ball.setVelocityX(-500);
-            }
-        } else if (this.cursors.right.isDown) {
-            this.platform.setVelocityX(500);
-            if (this.ball.getData('glue')) {
-                this.ball.setVelocityX(500);
-            }
-        } else {
-            this.platform.setVelocityX(0);
-            if (this.ball.getData('glue')) {
-                this.ball.setVelocityX(0);
-            }
-        }
+        this.ball.update(this.cursors);
+        this.platform.update(this.cursors);
     }
 
     platformImpact() {
         this.score++;
         this.scoreText.setText(`PUNTOS: ${this.score}`);
-        const relativeImpact = this.ball.x - this.platform.x;
-        this.ball.setVelocityX(10 * relativeImpact);
+        const relativeImpact = this.ball.get().x - this.platform.get().x;
+        this.ball.get().setVelocityX(10 * relativeImpact);
     }
 }
