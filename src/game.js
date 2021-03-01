@@ -33,16 +33,13 @@ export default class Game extends Phaser.Scene {
         this.platform = this.physics.add.image(400, 460, 'platform');
         this.platform.body.allowGravity = false;
         this.platform.setImmovable();
+        this.platform.setCollideWorldBounds(true);
 
         // Ball
-        this.ball = this.physics.add.image(400, 30, 'ball');
+        this.ball = this.physics.add.image(385, 430, 'ball');
         this.ball.setCollideWorldBounds(true);
         this.ball.setBounce(1);
-        let velocity = 100 * Phaser.Math.Between(1.3, 2);
-        if (Phaser.Math.Between(0, 10) > 5) {
-            velocity = 0 - velocity;
-        }
-        this.ball.setVelocity(velocity, 10);
+        this.ball.setData('glue', true);
 
         // Keyboard cursors
         this.cursors = this.input.keyboard.createCursorKeys();
@@ -66,13 +63,28 @@ export default class Game extends Phaser.Scene {
             this.scene.pause();
         }
 
+        // Eject ball
+        if (this.cursors.up.isDown && this.ball.getData('glue')) {
+            this.ball.setVelocity(-75, -300);
+            this.ball.setData('glue', false);
+        }
+
         // Cursor listener
         if (this.cursors.left.isDown) {
             this.platform.setVelocityX(-500);
+            if (this.ball.getData('glue')) {
+                this.ball.setVelocityX(-500);
+            }
         } else if (this.cursors.right.isDown) {
             this.platform.setVelocityX(500);
+            if (this.ball.getData('glue')) {
+                this.ball.setVelocityX(500);
+            }
         } else {
             this.platform.setVelocityX(0);
+            if (this.ball.getData('glue')) {
+                this.ball.setVelocityX(0);
+            }
         }
     }
 
