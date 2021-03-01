@@ -2,9 +2,14 @@ import gameoverImage from './assets/gameover.png';
 import backgroundImage from './assets/background.png';
 import platformImage from './assets/platform.png';
 import ballImage from './assets/ball.png';
+import bluebrick from './assets/brickBlue.png';
+import blackbrick from './assets/brickBlack.png';
+import greenbrick from './assets/brickGreen.png';
+import orangebrick from './assets/brickOrange.png';
 
 import Ball from './components/ball';
 import Platform from './components/platform';
+import Bricks from './components/bricks';
 
 export default class Game extends Phaser.Scene {
 
@@ -16,6 +21,7 @@ export default class Game extends Phaser.Scene {
         this.score = 0;
         this.ball = new Ball(this);
         this.platform = new Platform(this);
+        this.bricks = new Bricks(this);
     }
 
     preload() {
@@ -25,6 +31,10 @@ export default class Game extends Phaser.Scene {
         this.load.image('gameover', gameoverImage);
         this.load.image('platform', platformImage);
         this.load.image('ball', ballImage);
+        this.load.image('bluebrick', bluebrick);
+        this.load.image('blackbrick', blackbrick);
+        this.load.image('greenbrick', greenbrick);
+        this.load.image('orangebrick', orangebrick);
     }
 
     create() {
@@ -38,6 +48,18 @@ export default class Game extends Phaser.Scene {
         // Create components
         this.platform.create();
         this.ball.create();
+        this.bricks.create({
+            key: ['bluebrick', 'orangebrick', 'greenbrick', 'blackbrick'],
+            frameQuantity: 10,
+            gridAlign: {
+                width: 10,
+                height: 4,
+                cellWidth: 67,
+                cellHeight: 34,
+                x: 112,
+                y: 100
+            }
+        });
 
         // Keyboard cursors
         this.cursors = this.input.keyboard.createCursorKeys();
@@ -52,6 +74,7 @@ export default class Game extends Phaser.Scene {
         // World
         this.physics.world.setBoundsCollision(true, true, true, false);
         this.physics.add.collider(this.ball.get(), this.platform.get(), this.platformImpact, null, this);
+        this.physics.add.collider(this.ball.get(), this.bricks.get(), this.brickImpact, null, this);
     }
 
     update() {
@@ -70,10 +93,14 @@ export default class Game extends Phaser.Scene {
         this.platform.update(this.cursors);
     }
 
-    platformImpact() {
+    platformImpact(ball, platform) {
         this.score++;
         this.scoreText.setText(`PUNTOS: ${this.score}`);
-        const relativeImpact = this.ball.get().x - this.platform.get().x;
-        this.ball.get().setVelocityX(10 * relativeImpact);
+        const relativeImpact = ball.x - platform.x;
+        ball.setVelocityX(10 * relativeImpact);
+    }
+
+    brickImpact(ball, brick) {
+        brick.disableBody(true, true);
     }
 }
