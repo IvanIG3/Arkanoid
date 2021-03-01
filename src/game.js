@@ -10,6 +10,7 @@ import orangebrick from './assets/brickOrange.png';
 import Ball from './components/ball';
 import Platform from './components/platform';
 import Bricks from './components/bricks';
+import Score from './components/score';
 
 export default class Game extends Phaser.Scene {
 
@@ -18,10 +19,10 @@ export default class Game extends Phaser.Scene {
     }
 
     init() {
-        this.score = 0;
         this.ball = new Ball(this);
         this.platform = new Platform(this);
         this.bricks = new Bricks(this);
+        this.score = new Score(this);
     }
 
     preload() {
@@ -48,6 +49,7 @@ export default class Game extends Phaser.Scene {
         // Create components
         this.platform.create();
         this.ball.create();
+        this.score.create();
         this.bricks.create({
             key: ['bluebrick', 'orangebrick', 'greenbrick', 'blackbrick'],
             frameQuantity: 10,
@@ -63,13 +65,6 @@ export default class Game extends Phaser.Scene {
 
         // Keyboard cursors
         this.cursors = this.input.keyboard.createCursorKeys();
-
-        // Score
-        this.scoreText = this.add.text(16, 16, `PUNTOS: ${this.score}`, {
-            fontSize: '20px',
-            fill: '#fff',
-            fontFamily: 'verdana, arial, sans-serif'
-        });
 
         // World
         this.physics.world.setBoundsCollision(true, true, true, false);
@@ -94,8 +89,7 @@ export default class Game extends Phaser.Scene {
     }
 
     platformImpact(ball, platform) {
-        this.score++;
-        this.scoreText.setText(`PUNTOS: ${this.score}`);
+        this.score.increaseCounter(1);
         const relativeImpact = ball.x - platform.x;
         ball.setVelocityX(10 * relativeImpact);
     }
