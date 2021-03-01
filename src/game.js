@@ -86,7 +86,8 @@ export default class Game extends Phaser.Scene {
 
         // Eject ball
         if (this.cursors.up.isDown) {
-            this.ball.eject(-75);
+            const direction = this.ball.get().x - this.platform.get().x;
+            this.ball.eject(direction * 10);
         }
 
         this.ball.update(this.cursors);
