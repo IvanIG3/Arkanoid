@@ -80,6 +80,7 @@ export default class Game extends Phaser.Scene {
         // Check if game over
         if (this.ball.isLost()) {
             this.gameoverImage.visible = true;
+            this.bricks.get().setVisible(false);
             this.scene.pause();
         }
 
