@@ -6,6 +6,7 @@ import bluebrick from './assets/brickBlue.png';
 import blackbrick from './assets/brickBlack.png';
 import greenbrick from './assets/brickGreen.png';
 import orangebrick from './assets/brickOrange.png';
+import congratulationsImage from './assets/congratulations.png';
 
 import Ball from './components/ball';
 import Platform from './components/platform';
@@ -36,6 +37,7 @@ export default class Game extends Phaser.Scene {
         this.load.image('blackbrick', blackbrick);
         this.load.image('greenbrick', greenbrick);
         this.load.image('orangebrick', orangebrick);
+        this.load.image('congratulations', congratulationsImage);
     }
 
     create() {
@@ -45,6 +47,8 @@ export default class Game extends Phaser.Scene {
         // Gameover
         this.gameoverImage = this.add.image(400, 90, 'gameover');
         this.gameoverImage.visible = false;
+        this.congratsImage = this.add.image(400, 90, 'congratulations');
+        this.congratsImage.visible = false;
 
         // Create components
         this.platform.create();
@@ -96,5 +100,10 @@ export default class Game extends Phaser.Scene {
 
     brickImpact(ball, brick) {
         brick.disableBody(true, true);
+        this.score.increaseCounter(5);
+        if(this.bricks.get().countActive() === 0) {
+            this.congratsImage.visible = true;
+            this.scene.pause();
+        }
     }
 }
