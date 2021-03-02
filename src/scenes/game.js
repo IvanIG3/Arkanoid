@@ -1,19 +1,9 @@
-import gameoverImage from './assets/gameover.png';
-import backgroundImage from './assets/background.png';
-import platformImage from './assets/platform.png';
-import ballImage from './assets/ball.png';
-import bluebrick from './assets/brickBlue.png';
-import blackbrick from './assets/brickBlack.png';
-import greenbrick from './assets/brickGreen.png';
-import orangebrick from './assets/brickOrange.png';
-import congratulationsImage from './assets/congratulations.png';
+import Ball from '../components/ball';
+import Platform from '../components/platform';
+import Bricks from '../components/bricks';
+import Score from '../components/score';
 
-import Ball from './components/ball';
-import Platform from './components/platform';
-import Bricks from './components/bricks';
-import Score from './components/score';
-
-export default class Game extends Phaser.Scene {
+export default class GameScene extends Phaser.Scene {
 
     constructor() {
         super({ key: 'game' });
@@ -24,20 +14,6 @@ export default class Game extends Phaser.Scene {
         this.platform = new Platform(this);
         this.bricks = new Bricks(this);
         this.score = new Score(this);
-    }
-
-    preload() {
-        // Load images
-        this.load.image('logo', gameoverImage);
-        this.load.image('background', backgroundImage);
-        this.load.image('gameover', gameoverImage);
-        this.load.image('platform', platformImage);
-        this.load.image('ball', ballImage);
-        this.load.image('bluebrick', bluebrick);
-        this.load.image('blackbrick', blackbrick);
-        this.load.image('greenbrick', greenbrick);
-        this.load.image('orangebrick', orangebrick);
-        this.load.image('congratulations', congratulationsImage);
     }
 
     create() {

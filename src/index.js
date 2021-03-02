@@ -1,15 +1,15 @@
 import Phaser from 'phaser';
-import Game from './game.js';
+import GameScene from './scenes/game';
 
 const config = {
     type: Phaser.AUTO,
     width: 800,
     height: 500,
-    scene: [Game],
+    scene: [GameScene],
     physics: {
         default: 'arcade',
         arcade: {
-            // gravity: { y: 400 },
+            gravity: { y: 0 },
             debug: false
         }
     }
