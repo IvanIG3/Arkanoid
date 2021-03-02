@@ -20,12 +20,6 @@ export default class GameScene extends Phaser.Scene {
         // Background
         this.add.image(400, 250, 'background');
 
-        // Gameover
-        this.gameoverImage = this.add.image(400, 90, 'gameover');
-        this.gameoverImage.visible = false;
-        this.congratsImage = this.add.image(400, 90, 'congratulations');
-        this.congratsImage.visible = false;
-
         // Create components
         this.platform.create();
         this.ball.create();
@@ -55,9 +49,8 @@ export default class GameScene extends Phaser.Scene {
     update() {
         // Check if game over
         if (this.ball.isLost()) {
-            this.gameoverImage.visible = true;
             this.bricks.get().setVisible(false);
-            this.scene.pause();
+            this.scene.start('gameover');
         }
 
         // Eject ball
@@ -80,8 +73,7 @@ export default class GameScene extends Phaser.Scene {
         brick.disableBody(true, true);
         this.score.increaseCounter(5);
         if(this.bricks.get().countActive() === 0) {
-            this.congratsImage.visible = true;
-            this.scene.pause();
+            this.scene.start('congratulations');
         }
     }
 }
